@@ -1,5 +1,5 @@
 require 's3_direct_upload/version'
-require 'jquery-fileupload-rails' if defined?(Rails)
+# require 'jquery-fileupload-rails' if defined?(Rails)
 
 require 'base64'
 require 'openssl'

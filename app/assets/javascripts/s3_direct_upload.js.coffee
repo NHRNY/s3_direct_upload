@@ -1,5 +1,10 @@
-#= require jquery-fileupload/basic
-#= require jquery-fileupload/vendor/tmpl
+#= require jquery-fileupload/jquery.ui.widget
+#= require jquery-fileupload/load-image.min
+#= require jquery-fileupload/canvas-to-blob
+#= require jquery-fileupload/jquery.iframe-transport
+#= require jquery-fileupload/jquery.fileupload
+#= require jquery-fileupload/jquery.fileupload-process
+#= require jquery-fileupload/jquery.fileupload-image
 
 $ = jQuery
 
@@ -27,22 +32,26 @@ $.fn.S3Uploader = (options) ->
 
   setUploadForm = ->
     $uploadForm.fileupload
+      disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator && navigator.userAgent)
+      imageMaxWidth: settings.imageMaxWidth
+      imageMaxHeight: settings.imageMaxHeight
+      disableImagePreview: true
 
-      add: (e, data) ->
-        current_files.push data
-        file = data.files[0]
-        unless settings.before_add and not settings.before_add(file)
-          data.context = $(tmpl("template-upload", file)) if $('#template-upload').length > 0
-          $uploadForm.append(data.context)
-          data.submit()
+      # add: (e, data) ->
+      #   current_files.push data
+      #   file = data.files[0]
+      #   unless settings.before_add and not settings.before_add(file)
+      #     data.context = $(tmpl("template-upload", file)) if $('#template-upload').length > 0
+      #     $uploadForm.append(data.context)
+      #     data.submit()
 
       start: (e) ->
         $uploadForm.trigger("s3_uploads_start", [e])
 
-      progress: (e, data) ->
-        if data.context
-          progress = parseInt(data.loaded / data.total * 100, 10)
-          data.context.find('.bar').css('width', progress + '%')
+      # progress: (e, data) ->
+      #   if data.context
+      #     progress = parseInt(data.loaded / data.total * 100, 10)
+      #     data.context.find('.bar').css('width', progress + '%')
 
       done: (e, data) ->
         content = build_content_object $uploadForm, data.files[0], data.result
