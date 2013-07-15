@@ -22,7 +22,7 @@ $.fn.S3Uploader = (options) ->
   settings =
     path: ''
     additional_data: null
-    before_add: null
+    before_send: null
     remove_completed_progress_bar: true
     remove_failed_progress_bar: false
     image_max_width: 1200
@@ -39,13 +39,10 @@ $.fn.S3Uploader = (options) ->
       imageMaxHeight: settings.image_max_height
       disableImagePreview: true
 
-      # add: (e, data) ->
-      #   current_files.push data
-      #   file = data.files[0]
-      #   unless settings.before_add and not settings.before_add(file)
-      #     data.context = $(tmpl("template-upload", file)) if $('#template-upload').length > 0
-      #     $uploadForm.append(data.context)
-      #     data.submit()
+      send: (e, data) ->
+        file = data.files[0]
+        if settings.before_send
+          settings.before_send(file)
 
       start: (e) ->
         $uploadForm.trigger("s3_uploads_start", [e])
