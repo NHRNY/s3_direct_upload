@@ -1,6 +1,6 @@
 #= require jquery-fileupload/jquery.ui.widget
 #= require jquery-fileupload/load-image.min
-#= require jquery-fileupload/canvas-to-blob
+#= require jquery-fileupload/canvas-to-blob.min
 #= require jquery-fileupload/jquery.iframe-transport
 #= require jquery-fileupload/jquery.fileupload
 #= require jquery-fileupload/jquery.fileupload-process
@@ -47,40 +47,14 @@ $.fn.S3Uploader = (options) ->
       start: (e) ->
         $uploadForm.trigger("s3_uploads_start", [e])
 
-      # progress: (e, data) ->
-      #   if data.context
-      #     progress = parseInt(data.loaded / data.total * 100, 10)
-      #     data.context.find('.bar').css('width', progress + '%')
-
       done: (e, data) ->
         content = build_content_object $uploadForm, data.files[0], data.result
-
-        to = $uploadForm.data('post')
-        if to
-          content[$uploadForm.data('as')] = content.url
-
-          $.ajax
-            type: 'POST'
-            url: to
-            data: content
-            beforeSend: ( xhr, settings )       -> $uploadForm.trigger( 'ajax:beforeSend', [xhr, settings] )
-            complete:   ( xhr, status )         -> $uploadForm.trigger( 'ajax:complete', [xhr, status] )
-            success:    ( data, status, xhr )   -> $uploadForm.trigger( 'ajax:success', [data, status, xhr] )
-            error:      ( xhr, status, error )  -> $uploadForm.trigger( 'ajax:error', [xhr, status, error] )
-
-          # $.post(to, content)
-
-        data.context.remove() if data.context && settings.remove_completed_progress_bar # remove progress bar
         $uploadForm.trigger("s3_upload_complete", [content])
-
-        current_files.splice($.inArray(data, current_files), 1) # remove that element from the array
-        $uploadForm.trigger("s3_uploads_complete", [content]) unless current_files.length
 
       fail: (e, data) ->
         content = build_content_object $uploadForm, data.files[0], data.result
         content.error_thrown = data.errorThrown
 
-        data.context.remove() if data.context && settings.remove_failed_progress_bar # remove progress bar
         $uploadForm.trigger("s3_upload_failed", [content])
 
       formData: (form) ->
