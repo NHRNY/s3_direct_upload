@@ -25,6 +25,8 @@ $.fn.S3Uploader = (options) ->
     before_send: null
     remove_completed_progress_bar: true
     remove_failed_progress_bar: false
+    image_min_width: 0
+    image_min_height: 0
     image_max_width: 1200
     image_max_height: 1200
 
@@ -35,6 +37,8 @@ $.fn.S3Uploader = (options) ->
   setUploadForm = ->
     $uploadForm.fileupload
       disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator && navigator.userAgent)
+      imageMinWidth: settings.image_min_width
+      imageMinHeight: settings.image_min_height
       imageMaxWidth: settings.image_max_width
       imageMaxHeight: settings.image_max_height
       disableImagePreview: true
